@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HTML div</title>
+	<link rel="stylesheet" href="home.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		div.gallery:hover {
+    		border: 2px solid #777;
+		}
+		#image{   
+			width: 530px; 
+	 		float:left; 
+	 		height:350px; 
+			/*background:#ffd9cc; */
+			margin:10px
+		}
+		#descrip
+		{ 
+			float:left; 
+			background: #F2F2F2; 
+			margin-top:10px;
+			margin-left:5px;
+			margin-right:25px;
+			width:99%;
+			border-bottom:3px solid red;
+			font-family: "sans-serif";
+			font-size:20px;
+		}
+		div.gallery {
+		    margin: 17px;
+		    border: 2px solid #ccc;
+		    float: left;
+		    width: 265px;
+		}
+
+		div.gallery:hover {
+		    border: 2px solid #777;
+		}
+
+		div.gallery img {
+		  padding: 0px;
+		  padding-top: 5px;
+		}
+
+		div.desc {
+		    padding: 15px;
+		    text-align: center;
+		    font-size: 17px;
+		    font-family: Arial;
+		}
+		#dp{
+			font-size:25px;
+			font-weight:bolder;
+			font-family: Verdana;
+
+		}
+		#head{
+			font-family:"system-ui";
+			font-size:25px;
+		}
+		#adver{
+			/*border:1px solid black;*/
+			padding-bottom:50px;
+			font-color:black;
+			font-family:"system-ui";
+		}
+
+
+	</style>
+</head>
+<body onload="obj.send()">
+	<!-- <ul>
+			<li><a href="home.php"><img class="logo" src="Pictures/nykaalogo.jpeg" alt="nykaa Logo"></a></li>
+			<li style="float: right"><a href="home.php">Home</a></li> 
+		</ul> -->
+		 <div id="main">
+	<marquee id="mar" width="100%" direction="right" height="150px">
+ FREE SHIPPING FOR INTERNATIONAL AND DOMESTIC ORDERS ABOVE $60 !!
+	</marquee>
+		<!-- <div id="c">
+			<li><a class="purchase" href="#about">CART</a></li>
+		</div> -->
+        </div>
+   
+        
+
+    <div id="main2">
+
+		<div id="d2">
+				<a class="home" href="home.php">KYLIE COSMETICS</a></li>
+		</div>
+    
+        <div id="d">
+          
+         <ul>
+            <li><a class="nav" href="#home">HOLIDAY COLLECTION</a></li>&nbsp;&nbsp;
+			<li><a class="nav" href="#news">GIFT GUIDE</a></li>&nbsp;&nbsp;
+			<li><a class="nav" href="#home">SHOP</a></li>&nbsp;&nbsp;
+			<li><a class="nav" href="#home">SALE</a></li>&nbsp;&nbsp;
+			<li><a class="nav" href="#home">BUNDLES & SETS</a></li>&nbsp;&nbsp;
+			<li><a class="nav" href="#home">BACK IN STOCK</a></li>&nbsp;&nbsp;
+			<li><a class="nav" href="#home">KYLIES FAVE</a></li>&nbsp;&nbsp;
+			<!-- <li><a class="cart" href="#home">CART</a></li> -->
+
+		</ul>         
+		</div>
+</div>
+
+		<center>
+		<div id="all" >
+			<div id = "image"></div>
+			<div id = "details"></div>
+			<div id = "descrip">	<h1>PRODUCT DESCRIPTION</h1>	</div>
+		</div>
+		<div id="adv"><p id="adver"></p></div>
+		</center>
+	</br></br>
+
+<center><div id="top" style="margin-top: 150px;"></div></center>
+</body>
+<script>
+	// var pid="P002";
+	// localStorage.setItem("product_id",pid);
+	//console.log(product_id);
+	
+	var product_id=localStorage.getItem("productId");//productId should come from another page then only this page works
+	var obj={
+		xhr:new XMLHttpRequest(),
+		send:function(){
+			this.xhr.onreadystatechange=obj.handler;
+			this.xhr.open("GET","http://localhost:5000/api/user/product/details?prodId="+product_id);
+			this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			this.xhr.responseType="json";
+			this.xhr.send();
+		},
+		handler:function()
+		{
+			console.log("hi");
+			if(this.status==200 && this.readyState==4)
+			{
+				var txt ="";
+				var img="";
+				var desp="";
+				var adv="";
+				var profile = this.response;
+				console.log(profile);
+
+                img += "<img src='Pictures/"+profile.prodImage+"' class='box1' height='350px'; width:'530px';></img>";
+				txt += "<br><h4 id='dp'>PRODUCT NAME :&nbsp&nbsp"+profile.prodName+"</p>";
+				txt += "<p id='dp'>BRAND:&nbsp&nbsp"+profile.prodBrand+"</p>";
+				txt += "<p id='dp'>CATEGORY :&nbsp&nbsp"+profile.prodCat+"&nbsp&nbsp</p>";
+				txt += "<p id='dp'>PRICE :&nbsp&nbsp"+profile.prodPrice+"</p><br>";
+				txt += "<input class='sub' id='dp' type='Submit' value='ADD TO BAG' onclick='obj.login()'><br><br><br><br>";
+				
+				desp+="<h2 id='head'>PRODUCT DESCRIPTION<br></h2>";				
+				desp +="<p id='des'>"+profile.prodDesc+"</p>"
+				adv +=	"100% GENUINE PRODUCTS &nbsp&nbsp&nbsp&nbsp&nbsp EASY RETURN POLICY &nbsp&nbsp&nbsp&nbsp&nbsp SOLD BY KYLIE";
+
+                document.getElementById("image").innerHTML = img;
+			 	document.getElementById("details").innerHTML = txt;
+			 	document.getElementById("descrip").innerHTML = desp;
+			 	document.getElementById("adv").innerHTML = adv;
+
+			 	obj.top();
+		 		// txt += "<p id='dp'>"+profile.emailId+"</p><p id='dp'>"+profile.phoneNumber+"</p>";
+		 	}
+		},
+		top:function(){
+			this.xhr.onreadystatechange=obj.tophandle;
+			this.xhr.open("GET","http://localhost:5000/api/product/top");
+			this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			this.xhr.responseType="json";
+			this.xhr.send();
+		},
+		tophandle:function(){
+			if(this.status==200 && this.readyState==4){
+				var res = this.response;
+				var text = "";
+				text += "<center><h1 style='font-family:'Verdana'';>Top 6 products</h1></center>";
+				console.log(res);
+				for(i in res){
+					console.log("i=",i);
+					text += "<div  class='box1' >";
+					text += "<button style='background:transparent; border:none; padding=10px;' class='pic' id="+i+" onclick='obj.select("+i+")'>'";
+					text += "<img src='Pictures/"+res[i].productImage+"' id='img' height='250px' padding-top: 5px;>"
+					text += "<div class='desc'><strong>"+res[i].productName+"</strong></br>Cost : "+res[i].productPrice+"</div>"; 
+					text += "</button></div>";
+				}
+				document.getElementById("top").innerHTML = text;
+			}
+		},
+		select:function(pid){
+			console.log(pid.id);
+			localStorage.setItem("productId",pid.id);
+			// this.xhr.onreadystatechange=obj.send;
+			// this.xhr.open("GET","http://localhost:5000/api/user/product/details?prodId="+pid.id);
+			// this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			// this.xhr.responseType="json";
+			// this.xhr.send();
+			window.location.href="productdetails_1.html";
+		},
+		login:function(){
+			//localStorage.clear();
+			var uid = localStorage.getItem("userId");
+			var pid = localStorage.getItem("productId");
+			console.log("uid=",uid);
+			console.log("pid=",pid);
+			if(uid){
+				console.log("uid=",uid);
+				console.log("pid=",pid);
+				var q = 1;
+				var xyz={"userId":uid,"productId":pid,"quantity":q}
+				this.xhr.onreadystatechange=obj.handle;
+				var some=JSON.stringify(xyz);
+				console.log("json = ",some);
+				this.xhr.open("POST","http://localhost:5000/api/user/add/product");
+				this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				this.xhr.responseType="json";
+				this.xhr.send(some);
+				window.location.href='cart.html';
+			}
+			else{
+				window.location.href='Cos_login.html';
+			}
+		},
+		handle:function(){
+				if(this.status==201 && this.readyState==4){
+					var ress = this.response;
+					console.log(ress);
+					//window.location.href='cart.html';
+				}
+				else if (this.status==400 && this.readyState==4){
+					var ress = this.response;
+					alert(ress["msg"]);
+				}
+			}
+	}
+</script>
+</html>

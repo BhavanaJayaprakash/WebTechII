@@ -1,0 +1,121 @@
+#tt {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#tt td, #tt th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#tt tr:nth-child(even){background-color: #f2f2f2;}
+
+#tt tr:hover {background-color: #ddd;}
+
+#tt th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #ff3333;
+  color: black;
+  text-align: center;
+  font-size: 20px;
+}
+
+
+ul {
+  list-style-type: none;
+  margin: -5px;
+  padding: 0;
+  overflow: hidden;
+  /*background-color: #ffd9cc;*/
+  background-color: red;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: black;
+  font-family: Verdana;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #ff3333;
+  color:white;
+}
+
+.logo{
+  height:50px;
+  width:200px;
+  padding-top: 5px;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+td{
+  text-align: center;
+}
+
+
+.dropdown {
+  float: right;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  font-size: 20px;  
+  width: 100%;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 30px;
+  background-color: red;
+  font-family: "system-ui";
+  margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #ff3333;
+}
+
+.dropdown-content {
+  float: right;
+  display: none;
+  position: absolute;
+  width: 140px;
+  background-color: white;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+
+.dropdown-content a {
+  font-color: white;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+}
+
+.dropdown-content a:hover {
+  background-color: black;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content:hover {
+  background-color: #ff3333;
+  font-color: white;
+}
+

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>COSMETICS WEBSITE</title>
+		<link rel="stylesheet" href="Login.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		<ul>
+			<li><img class="logo" src="Pictures/Kylie.jpg" alt="nykaa Logo"></li>
+			<li style="float: right"><a href="home.php">Home</a></li>
+		</ul>
+		<hr>
+		<div class="pop">
+			<h1> Register </h1>
+			<input type="text" name="username" placeholder="Name" required></br>
+			<input type="text" name="phnum" placeholder="Phone Number" required></br>
+			<input type="text" name="address" placeholder="Address" required></br>
+			<input type="email" name="emailid" placeholder="Email Id" required></br>
+			<input type="password" name="password" placeholder="Password" required></br>
+			<input type="submit" value="Register" onclick="obj.regis()">
+			Already a user?
+			<input type="submit" value="Login" onclick="obj.log()">
+		</div>
+	</body>
+	<script>
+		var pid=localStorage.getItem("productId");
+		var obj=
+		{
+			xhr:new XMLHttpRequest(),
+			log:function(){
+				window.location.href='Cos_login.html';
+			},
+			regis:function()
+			{
+				console.log("In display..");
+				var R_name=document.getElementsByTagName("input")[0].value;
+				var R_ph=document.getElementsByTagName("input")[1].value;
+				var R_add=document.getElementsByTagName("input")[2].value;
+				var R_email=document.getElementsByTagName("input")[3].value;
+				var R_pw=document.getElementsByTagName("input")[4].value;
+				var values={"email":R_email,"password":R_pw,"name":R_name,"phoneNo":R_ph, "address":R_add};
+			    
+				console.log("values=",values);
+				this.xhr.onreadystatechange=obj.handler;
+				var some =JSON.stringify(values);
+				this.xhr.open("POST","http://localhost:5000/api/user/register");
+				this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				this.xhr.responseType="json";
+				this.xhr.send(some);
+			},
+			handler:function()
+			{
+				if(this.status==200 && this.readyState==4)
+				{
+					var response = this.response;
+					alert(response["msg"]);
+                    localStorage.setItem("userId",response["userId"]);
+					localStorage.setItem("Uname",response["name"]);
+					abc.addCart();
+				}
+				else if ((this.status==401 || this.status==400)&& this.readyState==4)
+				{
+					var ress = this.response;
+					alert(ress["msg"]);
+				}
+			}
+		}
+		var abc={
+			xhr:new XMLHttpRequest(),
+			addCart:function(){
+				var uid = localStorage.getItem("userId");
+				console.log("uid = ",uid);
+				console.log("pid = ",pid);
+				var xyz={"userId":uid,"productId":pid,"quantity":1}
+				this.xhr.onreadystatechange=abc.handle;
+				var some=JSON.stringify(xyz);
+				console.log("json = ",some);
+				this.xhr.open("POST","http://localhost:5000/api/user/add/product");
+				this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				this.xhr.responseType="json";
+				this.xhr.send(some);
+			},
+			handle:function(){
+				if(this.status==201 && this.readyState==4){
+					var ress = this.response;
+					console.log(ress);
+					window.location.href='cart.html';
+				}
+				else if (this.status==400 && this.readyState==4){
+					var ress = this.response;
+					alert(ress["msg"]);
+				}
+			}
+		}
+	</script>
+</html>

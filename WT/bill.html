@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bill</title>
+		<link rel="stylesheet" href="cart.css">
+	</head>
+	<!-- <body onload="obj.display()"> -->
+	<body>
+		<ul>
+			<li><img class="logo" src="Pictures/nykaalogo.jpeg" alt="nykaa Logo"></li>
+			<li style="float: right">
+				<div class="dropdown">
+    				<button id="un" class="dropbtn">
+      					<i class="fa fa-caret-down"></i>
+    				</button>
+    				<div class="dropdown-content">
+      					<a href="Cos_login.html" onclick="obj.logout()">Logout</a>
+    				</div>
+  				</div> 
+      		</li>
+		</ul>
+		<hr>
+	</body>
+	<script>
+		var U_id=localStorage.getItem("userId");
+		var P_id=localStorage.getItem("productId");
+		var U_name=localStorage.getItem("Uname");
+		console.log(U_id,P_id,U_name);
+		document.getElementById("un").innerHTML = U_name;
+	</script>
+</html>

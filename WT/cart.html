@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cart</title>
+		<link rel="stylesheet" href="Cart.css">
+		<style>
+			/*#tt {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#tt td, #tt th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#tt tr:nth-child(even){background-color: #f2f2f2;}
+
+#tt tr:hover {background-color: #ddd;}
+
+#tt th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #ffd9cc;
+  color: black;
+  text-align: center;
+}*/
+.pop input[type="submit"]{
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 100%;
+	padding: 3%;
+	background:  #ffd9cc;
+	border-bottom: 2px solid #ffb399;
+	border-top-style: none;
+	border-right-style: none;
+	border-left-style: none;	
+	border-radius: 10px;
+	color: black;
+}
+
+.pop input[type="submit"]:hover{
+	background: #ffb399;
+}
+.button {
+  background-color: #ffd9cc; /* Green */
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #ff3333;
+}
+
+.button:hover {
+  background-color: #ff3333;
+  color: white;
+}
+ul{
+	height:70px;
+}
+#un{
+	height:67px;
+}
+		</style>
+	</head>
+	<body onload="obj.display()">
+		<ul>
+			<li><img class="logo" src="Pictures/Kylie.jpg" style="height:60px; padding-left: 5px" alt="nykaa Logo"></li>
+			<li style="float: right">
+				<div class="dropdown">
+    				<button id="un" class="dropbtn">
+      					<i class="fa fa-caret-down"></i>
+    				</button>
+    				<div class="dropdown-content">
+      					<a href="Cos_login.html" onclick="obj.logout()">Logout</a>
+    				</div>
+  				</div> 
+      		</li>
+		</ul>
+		<hr>
+		<center>
+		<div class="profile">
+			<h1> CART </h1>
+			<p id="1"></p>
+		</div>
+		<button id="back" class="button" onclick="obj.back()">Browse more</button>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+		<button id="next" class="button" onclick="obj.next()">Buy</button>
+
+		<p id="tot"></p>
+		</center>
+	</body>
+	<script>
+		var U_id=localStorage.getItem("userId");
+		var P_id=localStorage.getItem("productId");
+		var U_name=localStorage.getItem("Uname");
+		//console.log(U_id,P_id,U_name);
+		document.getElementById("un").innerHTML = U_name;
+
+		var count=0;
+		var total_amt=0;
+		var np=0;
+
+		var temp;
+		var id = [];
+
+		var obj={
+			xhr:new XMLHttpRequest(),
+			display:function(){
+				this.xhr.onreadystatechange=obj.handler;
+				this.xhr.open("GET","http://localhost:5000/api/user/cart?userId="+U_id);
+				this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				this.xhr.responseType="json";
+				this.xhr.send();
+			},
+			handler:function()
+			{
+				if(this.status==200 && this.readyState==4)
+				{
+					var profile = this.response;
+					//console.log(profile);
+					var txt = "";
+
+					txt += "<table id='tt' border='1'>";
+					txt += "<tr><th>PRODUCT NAME</th><th>BRAND</th><th>PRICE</th><th>QUNATITY</th><th>SUBTOTAL</th><th>DELETE</th></tr>";
+					txt += "<tr><td colspan='6'></td></tr>"
+
+					for (i in profile){
+						count=count+1;
+						//console.log("i",i)
+						//console.log(profile[i])
+						//console.log(profile[i].brand)
+
+						txt += "<tr><td>"+profile[i].name+"</td><td>"+profile[i].brand+"</td><td>"+profile[i].price+"</td><td>&nbsp<button class='dr' id="+i+" onclick='obj.decrement("+i+")'>&nbsp-&nbsp</button>&nbsp"+profile[i].quantity+"&nbsp<button class='dr' id="+i+" onclick='obj.increment("+i+")'> &nbsp+&nbsp</button>&nbsp </td><td>"+profile[i].subtotal+"</td><td> <button onclick='obj.delete("+i+")'>Delete</button></td></tr>";
+						total_amt += profile[i].subtotal;
+						np += profile[i].quantity;
+					}
+
+					txt += "<tr><td colspan='6'></td></tr>"
+					txt += "<tr><th colspan='3'>TOTAL</th><th>"+np+"</th><th colspan='2'>"+total_amt+"</th></tr>";
+					txt += "</table>";
+					document.getElementById("1").innerHTML = txt;
+				}
+			},
+			decrement:function(pid){
+				console.log("decrement");
+				console.log("pid=",pid[1].id);
+				var p=pid[1].id;
+				var x = document.getElementsByClassName("dr").id;
+				console.log("x=",x);
+				var uid = localStorage.getItem("userId");
+				console.log("uid = ",U_id);
+				console.log("pid = ",p);
+				q = -1;
+				var xyz={"userId":U_id,"productId":p,"quantity":q};
+				console.log(xyz);
+				this.xhr.onreadystatechange=obj.handle;
+				var some=JSON.stringify(xyz);
+				console.log("json = ",some);
+				this.xhr.open("POST","http://localhost:5000/api/user/add/product");
+				this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				this.xhr.responseType="json";
+				this.xhr.send(some);
+			},
+			increment:function(pid){
+				console.log("increment");
+				console.log("pid=",pid[1].id);
+				var p=pid[1].id;
+				var x = document.getElementsByClassName("dr").id;
+				console.log("x=",x);
+				var uid = localStorage.getItem("userId");
+				console.log("uid = ",U_id);
+				console.log("pid = ",p);
+				q = 1;
+				var xyz={"userId":U_id,"productId":p,"quantity":q};
+				console.log(xyz);
+				this.xhr.onreadystatechange=obj.handle;
+				var some=JSON.stringify(xyz);
+				console.log("json = ",some);
+				this.xhr.open("POST","http://localhost:5000/api/user/add/product");
+				this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				this.xhr.responseType="json";
+				this.xhr.send(some);
+			},
+			handle:function(){
+				if(this.status==201 && this.readyState==4){
+					var ress = this.response;
+					console.log(ress);
+					window.location.href='cart.html';
+				}
+				else if (this.status==400 && this.readyState==4){
+					var ress = this.response;
+					alert(ress["msg"]);
+				}
+			},
+			delete:function(pid) {
+				console.log("IN delete pid = ",pid[1].id);
+				var p = pid[1].id;
+				console.log("user",U_id);
+				var xyz={"userId":U_id,"prodId":p};
+				console.log(xyz);
+				this.xhr.onreadystatechange=obj.handel;
+				var some=JSON.stringify(xyz);
+				console.log("json =",some);
+				this.xhr.open("DELETE","http://localhost:5000/api/user/delete/item");
+				this.xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+				this.responseType="json";
+				this.xhr.send(some);
+			},
+			handel:function(){
+				if(this.status==200 && this.readyState==4){
+					var res = this.response;
+					console.log(res["msg1"]);
+					if(res["msg1"]==1){
+					 	window.location.href='cart.html';
+					}
+					else if(res["msg1"]==0){
+						window.location.href='home.php';
+					}
+					//window.location.href='cart.html';
+				}
+			},
+			back:function(){
+				window.location.href='home.php';
+			},
+			next:function(){
+				//window.location.href='bill.html';
+				console.log(count);
+				console.log(np, total_amt);
+
+				var text = "";
+				text += "<br><br><br><hr>";
+				text += "<h1>Mode of Payment</h1>";
+				text += "<input type='radio' name='MOP' value='Card'>Card";
+  				text += "&nbsp&nbsp&nbsp&nbsp&nbsp<input type='radio' name='MOP' value='Cash on Delivery'>Cash on Delivery<br><br>"
+  				text += "<input type='submit' class='button' class='pop' value='Pay' onclick='obj1.pay()'>"
+
+				document.getElementById("tot").innerHTML = text;
+
+			},
+			logout:function(){
+				localStorage.clear();
+				window.location.href='home.php';
+			}
+		}
+		var obj1={
+			xhr:new XMLHttpRequest(),
+			pay:function(){
+				console.log("paid");
+				this.xhr.onreadystatechange=obj1.proceed;
+				this.xhr.open("GET","http://localhost:5000/api/user/cart?userId="+U_id);
+				this.xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				this.xhr.responseType="json";
+				this.xhr.send();
+			},
+			proceed:function(){
+				console.log("In proceed....");
+				console.log("user",U_id);
+				var mop;
+				var paid;
+				var radio = document.getElementsByName('MOP');
+				for(i in radio){
+					if(radio[i].checked){
+						//console.log(radio[i].value);
+						mop = radio[i].value;
+					}
+				}
+				var today = new Date();
+				var hr = today.getHours();
+				if(hr > 12){
+					hr = hr - 12;
+				}
+				var year = today.getFullYear();
+				var month = today.getMonth() + 1;
+				var date = today.getDate();
+				var time = year + "-" + month + "-" + date + " " + hr + ":" + today.getMinutes() + ":" + today.getSeconds();
+				//console.log("userId=",U_id);
+				//console.log("mop=",mop);
+				if(mop=="Cash on Delivery"){
+					paid="No";
+				}
+				else if(mop=="Card"){
+					paid="Yes";
+				}
+
+				//console.log("Paid=",paid);
+				//console.log("total=",total_amt);
+				//console.log("dateTime=",time);
+
+				if(this.status == 200 && this.readyState==4)
+				{
+					console.log("hi");
+					var profile = this.response;
+					//console.log(profile);
+					for(i in profile)
+					{
+						console.log("i=",i);
+						id.push(i);						
+					}
+					temp={"userId":U_id,"date":time,"total":total_amt,"mode":mop,"paid":paid,"nProd":np,"listId":id};
+					obj1.payment(temp);
+				}
+			},
+			payment:function(tt){
+				console.log("temp=",tt);
+				console.log("list pid = ",id);
+				this.xhr.onreadystatechange=obj1.purc;
+				var some=JSON.stringify(tt);
+				console.log("json =",some);
+				this.xhr.open("POST","http://localhost:5000/api/user/purchase");
+				this.xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+				this.responseType="json";
+				this.xhr.send(some);
+			},
+			purc:function(){
+				if(this.status == 200 && this.readyState==4)
+				{
+					var profile = this.response;
+					console.log("profile=",profile);
+					alert(profile["msg"]);
+					var uid=profile['userId'];
+					var pid=profile['prodId'];
+					console.log("uid = ",uid);
+					console.log("pid = ",pid);
+					obj1.del(pid);
+				}
+			},
+			del:function(pid){
+				console.log("user",U_id);
+				var xyz={"userId":U_id};
+				console.log(xyz);
+				this.xhr.onreadystatechange=obj1.handel;
+				var some=JSON.stringify(xyz);
+				console.log("json =",some);
+				this.xhr.open("DELETE","http://localhost:5000/api/user/delete/cart");
+				this.xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+				this.responseType="json";
+				this.xhr.send(some);
+			},
+			handel:function(){
+				if(this.status==200 && this.readyState==4){
+					var res = this.response;
+					console.log(res["msg"]);
+					window.location.href="home.php";
+				}
+			}
+		}
+	</script>
+</html>
